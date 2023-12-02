@@ -13,6 +13,11 @@
         font-size: 6rem;
         text-align: center;
       }
+      button:disabled {
+        background-color: blue !important;
+        color: white !important;
+        opacity: 1 !important;
+      }
     </style>
   </head>
   <body>
@@ -22,6 +27,7 @@
         <h1 class="display-5 fw-bold">Modelos de CNN</h1>
         <div class="col-lg-6 mx-auto">
           <p class="lead mb-0">Clasificación de señales de Transito en una web utilizando Tensorflow.js</p>
+          <p class="lead mb-0">La precisión de los modelos se encuentra de mayor a menor</p>
           <p class="lead mb-4"></p>
         </div>
       </div>
@@ -33,32 +39,28 @@
           <div class="col-12 col-md-4 offset-md-4 text-center">
             <video id="video" playsinline autoplay style="width: 1px;"></video>
             <button class="btn btn-primary mb-2" id="cambiar-camara" onclick="cambiarCamara();" style="background-color: red;">Cambiar camara</button>
+            <div style="display: inline-block;">
+              <button class="btn btn-primary mb-2" id="cambiar-modelo" style="background-color: blue;"disabled>Cambiar Modelo</button>
+              <select class="btn btn-primary mb-2" id="modelo-seleccionado" style="background-color: blue;">
+                <option value="modelo1">VGG-16 </option>
+                <option value="modelo2">EfficientNetV2S</option>
+                <option value="modelo3">ResNet50</option>
+                <option value="modelo4">DenseNet121</option>
+                <option value="modelo5">Xception</option>
+              </select>
+            </div>
             <canvas id="canvas" width="400" height="400" style="max-width: 100%;"></canvas>
             <canvas id="otrocanvas" width="150" height="150" style="display: none"></canvas>
             <div id="resultado"></div>            
           </div>
         </div>
       </div>
-
-      <div class="b-example-divider"></div>
-
-
       <div class="b-example-divider mb-0"></div>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
-
-    <select id="modelo-seleccionado">
-      <option value="modelo1">Modelo 1</option>
-      <option value="modelo2">Modelo 2</option>
-      <option value="modelo3">Modelo 3</option>
-      <option value="modelo4">Modelo 4</option>
-      <option value="modelo5">Modelo 5</option>
-    </select>
-    <button onclick="cargarModelo()">Cargar Modelo</button>
-  
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script> 
 
   <script type="text/javascript">
 
@@ -79,7 +81,8 @@
     })();
 
     window.onload = function() {
-      mostrarCamara();
+    mostrarCamara();
+    cargarModelo(); // Carga el modelo cuando la página se carga por primera vez
     }
 
     function mostrarCamara() {
@@ -293,42 +296,31 @@
 
 
           ctx2.putImageData(img2, 0, 0);
-
-          script>
-    
-    async function cargarModelo() {
-      var modeloSeleccionado = document.getElementById('modelo-seleccionado').value;
-      
-      var nombreModelo;
-      var nombreBin1;
-      var nombreBin2;
-
-      if (modeloSeleccionado === 'modelo1') {
-        nombreModelo = 'model - Copy.json';
-        nombreBin1 = 'group1-shard1of2.bin';
-        nombreBin2 = 'group1-shard2of2.bin';
-      } else if (modeloSeleccionado === 'modelo2') {
-        nombreModelo = 'model2.json';
-        nombreBin1 = 'momodelo(2)1de2.bin';
-        nombreBin2 = 'momodelo(2)2de2.bin';
-      } else if (modeloSeleccionado === 'modelo3') {
-        nombreModelo = 'model3.json';
-        nombreBin1 = 'momodelo(3)1de2.bin';
-        nombreBin2 = 'momodelo(3)2de2.bin';
-      } else if (modeloSeleccionado === 'modelo4') {
-        nombreModelo = 'model4.json';
-        nombreBin1 = 'momodelo(4)1de2.bin';
-        nombreBin2 = 'momodelo(4)2de2.bin';
-      } else if (modeloSeleccionado === 'modelo5') {
-        nombreModelo = 'model5.json';
-        nombreBin1 = 'momodelo(5)1de2.bin';
-        nombreBin2 = 'momodelo(5)2de2.bin';
       }
 
-      // Carga el modelo
-      const model = await tf.loadLayersModel( nombreModelo);
-      }
-    }
+      async function cargarModelo() {
+        console.log("Función cargarModelo llamada"); // Se agrega esta línea para verificar que la función se está llamando
+        const modelos = {
+          'modelo1': 'model - Copy.json',
+          'modelo2': 'model2.json',
+          'modelo3': 'model3.json',
+          'modelo4': 'model4.json',
+          'modelo5': 'model5.json'
+        };
+
+  var modeloSeleccionado = document.getElementById('modelo-seleccionado').value;
+  
+  // Verifica si el modelo seleccionado existe en el objeto de modelos
+  if (modeloSeleccionado in modelos) {
+    console.log("Cargando modelo...");
+    modelo = await tf.loadLayersModel(modelos[modeloSeleccionado]);
+    console.log("Modelo cargado");
+  } else {
+    console.error('El modelo seleccionado no existe: ', modeloSeleccionado);
+  }
+}
+// Agrega un evento change al elemento modelo-seleccionado
+document.getElementById('modelo-seleccionado').addEventListener('change', cargarModelo);
   </script>
   </body>
 </html>
