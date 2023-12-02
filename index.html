@@ -50,6 +50,16 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
 
+    <select id="modelo-seleccionado">
+      <option value="modelo1">Modelo 1</option>
+      <option value="modelo2">Modelo 2</option>
+      <option value="modelo3">Modelo 3</option>
+      <option value="modelo4">Modelo 4</option>
+      <option value="modelo5">Modelo 5</option>
+    </select>
+    <button onclick="cargarModelo()">Cargar Modelo</button>
+  
+
   <script type="text/javascript">
 
     var tamano = 400;
@@ -283,7 +293,42 @@
 
 
           ctx2.putImageData(img2, 0, 0);
+
+          script>
+    
+    async function cargarModelo() {
+      var modeloSeleccionado = document.getElementById('modelo-seleccionado').value;
+      
+      var nombreModelo;
+      var nombreBin1;
+      var nombreBin2;
+
+      if (modeloSeleccionado === 'modelo1') {
+        nombreModelo = 'model - Copy.json';
+        nombreBin1 = 'group1-shard1of2.bin';
+        nombreBin2 = 'group1-shard2of2.bin';
+      } else if (modeloSeleccionado === 'modelo2') {
+        nombreModelo = 'model2.json';
+        nombreBin1 = 'momodelo(2)1de2.bin';
+        nombreBin2 = 'momodelo(2)2de2.bin';
+      } else if (modeloSeleccionado === 'modelo3') {
+        nombreModelo = 'model3.json';
+        nombreBin1 = 'momodelo(3)1de2.bin';
+        nombreBin2 = 'momodelo(3)2de2.bin';
+      } else if (modeloSeleccionado === 'modelo4') {
+        nombreModelo = 'model4.json';
+        nombreBin1 = 'momodelo(4)1de2.bin';
+        nombreBin2 = 'momodelo(4)2de2.bin';
+      } else if (modeloSeleccionado === 'modelo5') {
+        nombreModelo = 'model5.json';
+        nombreBin1 = 'momodelo(5)1de2.bin';
+        nombreBin2 = 'momodelo(5)2de2.bin';
       }
+
+      // Carga el modelo
+      const model = await tf.loadLayersModel( nombreModelo);
+      }
+    }
   </script>
   </body>
 </html>
